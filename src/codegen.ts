@@ -1,7 +1,4 @@
-import { createRequire } from "https://deno.land/std/node/module.ts";
-
-const require = createRequire(import.meta.url);
-const SourceNode = require("source-map").SourceNode;
+import { SourceNode } from "source-map";
 
 import {
   JavaScriptArray,
@@ -509,7 +506,7 @@ function compileJavaScriptArray(
   ast: JavaScriptArray,
   sourceFile: string | null = null,
   indent: number = 0,
-): typeof SourceNode {
+): SourceNode {
   if (ast.items.length === 0) {
     return new SourceNode(
       ast.line,
@@ -520,12 +517,12 @@ function compileJavaScriptArray(
   }
 
   if (ast.items[0].type === JavaScriptNodeType.FUNCTION_DEFINITION) {
-    const functionNode: typeof SourceNode = compileJavaScriptToSourceNode(
+    const functionNode: SourceNode = compileJavaScriptToSourceNode(
       ast.items[0],
       sourceFile,
       indent,
     );
-    const argNodes: (typeof SourceNode)[] = ast.items.slice(1).map((
+    const argNodes: (SourceNode)[] = ast.items.slice(1).map((
       item: JavaScriptNode,
     ) => compileJavaScriptToSourceNode(item, sourceFile, indent));
     const argNodesWithCommas: any[] = [];
@@ -542,7 +539,7 @@ function compileJavaScriptArray(
       [functionNode, "(", ...argNodesWithCommas, ")"],
     );
   } else {
-    const itemNodes: (typeof SourceNode)[] = ast.items.map((
+    const itemNodes: (SourceNode)[] = ast.items.map((
       item: JavaScriptNode,
     ) => compileJavaScriptToSourceNode(item, sourceFile, indent));
     const itemNodesWithCommas: any[] = [];
@@ -565,13 +562,13 @@ function compileJavaScriptArrayAccess(
   ast: JavaScriptArrayAccess,
   sourceFile: string | null = null,
   indent: number = 0,
-): typeof SourceNode {
-  const arrayNode: typeof SourceNode = compileJavaScriptToSourceNode(
+): SourceNode {
+  const arrayNode: SourceNode = compileJavaScriptToSourceNode(
     ast.array,
     sourceFile,
     indent,
   );
-  const indexNode: typeof SourceNode = compileJavaScriptToSourceNode(
+  const indexNode: SourceNode = compileJavaScriptToSourceNode(
     ast.index,
     sourceFile,
     indent,
@@ -588,8 +585,8 @@ function compileJavaScriptAssignmentOperation(
   ast: JavaScriptAssignmentOperation,
   sourceFile: string | null = null,
   indent: number = 0,
-): typeof SourceNode {
-  const valueNode: typeof SourceNode = compileJavaScriptToSourceNode(
+): SourceNode {
+  const valueNode: SourceNode = compileJavaScriptToSourceNode(
     ast.value,
     sourceFile,
     indent,
@@ -606,13 +603,13 @@ function compileJavaScriptBinaryOperation(
   ast: JavaScriptBinaryOperation,
   sourceFile: string | null = null,
   indent: number = 0,
-): typeof SourceNode {
-  const leftSideNode: typeof SourceNode = compileJavaScriptToSourceNode(
+): SourceNode {
+  const leftSideNode: SourceNode = compileJavaScriptToSourceNode(
     ast.leftSide,
     sourceFile,
     indent,
   );
-  const rightSideNode: typeof SourceNode = compileJavaScriptToSourceNode(
+  const rightSideNode: SourceNode = compileJavaScriptToSourceNode(
     ast.rightSide,
     sourceFile,
     indent,
@@ -629,7 +626,7 @@ function compileJavaScriptBoolean(
   ast: JavaScriptBoolean,
   sourceFile: string | null = null,
   indent: number = 0,
-): typeof SourceNode {
+): SourceNode {
   return new SourceNode(
     ast.line,
     ast.column,
@@ -642,18 +639,18 @@ function compileJavaScriptConditionalOperation(
   ast: JavaScriptConditionalOperation,
   sourceFile: string | null = null,
   indent: number = 0,
-): typeof SourceNode {
-  const conditionNode: typeof SourceNode = compileJavaScriptToSourceNode(
+): SourceNode {
+  const conditionNode: SourceNode = compileJavaScriptToSourceNode(
     ast.condition,
     sourceFile,
     indent,
   );
-  const valueIfTrueNode: typeof SourceNode = compileJavaScriptToSourceNode(
+  const valueIfTrueNode: SourceNode = compileJavaScriptToSourceNode(
     ast.valueIfTrue,
     sourceFile,
     indent,
   );
-  const valueIfFalseNode: typeof SourceNode = compileJavaScriptToSourceNode(
+  const valueIfFalseNode: SourceNode = compileJavaScriptToSourceNode(
     ast.valueIfFalse,
     sourceFile,
     indent,
@@ -670,8 +667,8 @@ function compileJavaScriptConsoleLogStatement(
   ast: JavaScriptConsoleLogStatement,
   sourceFile: string | null = null,
   indent: number = 0,
-): typeof SourceNode {
-  const objectNode: typeof SourceNode = compileJavaScriptToSourceNode(
+): SourceNode {
+  const objectNode: SourceNode = compileJavaScriptToSourceNode(
     ast.object,
     sourceFile,
     indent,
@@ -700,8 +697,8 @@ function compileJavaScriptFunctionCall(
   ast: JavaScriptFunctionCall,
   sourceFile: string | null = null,
   indent: number = 0,
-): typeof SourceNode {
-  const argNodes: (typeof SourceNode)[] = ast.args.map((
+): SourceNode {
+  const argNodes: (SourceNode)[] = ast.args.map((
     item: JavaScriptNode,
   ) => compileJavaScriptToSourceNode(item, sourceFile, indent));
   const argNodesWithCommas: any[] = [];
@@ -723,8 +720,8 @@ function compileJavaScriptFunctionDefinition(
   ast: JavaScriptFunctionDefinition,
   sourceFile: string | null = null,
   indent: number = 0,
-): typeof SourceNode {
-  const functionBodyNode: typeof SourceNode = compileJavaScriptToSourceNode(
+): SourceNode {
+  const functionBodyNode: SourceNode = compileJavaScriptToSourceNode(
     ast.body,
     sourceFile,
     indent + 2,
@@ -751,8 +748,8 @@ function compileJavaScriptIIFE(
   ast: JavaScriptIIFE,
   sourceFile: string | null = null,
   indent: number = 0,
-): typeof SourceNode {
-  const statementNodes: (typeof SourceNode)[] = ast.nodes.slice(
+): SourceNode {
+  const statementNodes: (SourceNode)[] = ast.nodes.slice(
     0,
     ast.nodes.length - 1,
   )
@@ -765,7 +762,7 @@ function compileJavaScriptIIFE(
     statementNodesWithLineBreaks.push(statementNode);
     statementNodesWithLineBreaks.push(";\n");
   }
-  const returnValueNode: typeof SourceNode = compileJavaScriptToSourceNode(
+  const returnValueNode: SourceNode = compileJavaScriptToSourceNode(
     ast.nodes[ast.nodes.length - 1],
     sourceFile,
     indent + 2,
@@ -809,13 +806,13 @@ function compileJavaScriptMethodCall(
   ast: JavaScriptMethodCall,
   sourceFile: string | null = null,
   indent: number = 0,
-): typeof SourceNode {
-  const objectNode: typeof SourceNode = compileJavaScriptToSourceNode(
+): SourceNode {
+  const objectNode: SourceNode = compileJavaScriptToSourceNode(
     ast.object,
     sourceFile,
     indent,
   );
-  const argNodes: (typeof SourceNode)[] = ast.args.map((
+  const argNodes: (SourceNode)[] = ast.args.map((
     item: JavaScriptNode,
   ) => compileJavaScriptToSourceNode(item, sourceFile, indent));
   const argNodesWithCommas: any[] = [];
@@ -836,7 +833,7 @@ function compileJavaScriptMethodCall(
 function compileJavaScriptNull(
   ast: JavaScriptNull,
   sourceFile: string | null = null,
-): typeof SourceNode {
+): SourceNode {
   return new SourceNode(
     ast.line,
     ast.column,
@@ -848,7 +845,7 @@ function compileJavaScriptNull(
 function compileJavaScriptNumber(
   ast: JavaScriptNumber,
   sourceFile: string | null = null,
-): typeof SourceNode {
+): SourceNode {
   return new SourceNode(
     ast.line,
     ast.column,
@@ -861,8 +858,8 @@ function compileJavaScriptPropertyAccess(
   ast: JavaScriptPropertyAccess,
   sourceFile: string | null = null,
   indent: number = 0,
-): typeof SourceNode {
-  const objectNode: typeof SourceNode = compileJavaScriptToSourceNode(
+): SourceNode {
+  const objectNode: SourceNode = compileJavaScriptToSourceNode(
     ast.object,
     sourceFile,
     indent,
@@ -878,7 +875,7 @@ function compileJavaScriptPropertyAccess(
 function compileJavaScriptString(
   ast: JavaScriptString,
   sourceFile: string | null = null,
-): typeof SourceNode {
+): SourceNode {
   return new SourceNode(
     ast.line,
     ast.column,
@@ -890,7 +887,7 @@ function compileJavaScriptString(
 function compileJavaScriptVariable(
   ast: JavaScriptVariable,
   sourceFile: string | null = null,
-): typeof SourceNode {
+): SourceNode {
   return new SourceNode(
     ast.line,
     ast.column,
@@ -903,7 +900,7 @@ function compileJavaScriptToSourceNode(
   ast: JavaScriptNode,
   sourceFile: string | null = null,
   indent: number = 0,
-): typeof SourceNode {
+): SourceNode {
   if (ast.type === JavaScriptNodeType.ARRAY) {
     return compileJavaScriptArray(ast, sourceFile, indent);
   } else if (ast.type === JavaScriptNodeType.ARRAY_ACCESS) {
@@ -967,7 +964,7 @@ function compileChipmunkFileToJavaScript(path: string): void {
 }
 
 export {
-  compileJavaScriptToSourceNode,
   compileChipmunkFileToJavaScript,
+  compileJavaScriptToSourceNode,
   convertChipmunkNodeToJavaScriptNode,
 };

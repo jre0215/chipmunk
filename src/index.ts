@@ -1,4 +1,4 @@
-import { readLines } from "https://deno.land/std/io/bufio.ts";
+import { TextLineStream } from "@std/streams/text-line-stream";
 
 import interpret from "./interpret.ts";
 import replEnv from "./replEnv.ts";
@@ -22,9 +22,12 @@ async function runChipmunkRepl(): Promise<void> {
       'Tip: The underscore symbol ("_") always contains the value of the last expression\n',
     ),
   );
+  const stdinReadable = Deno.stdin.readable
+    .pipeThrough(new TextDecoderStream())
+    .pipeThrough(new TextLineStream());
   while (true) {
     Deno.stdout.writeSync(new TextEncoder().encode("> "));
-    for await (const line of readLines(Deno.stdin)) {
+    for await (const line of stdinReadable) {
       const trimmedLine = line.trim();
       if (trimmedLine.length > 0) {
         if (trimmedLine === "exit") {

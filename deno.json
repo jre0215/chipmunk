@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "@std/streams": "jsr:@std/streams@^1.1.0",
+    "source-map": "npm:source-map@^0.7.6"
+  }
+}
