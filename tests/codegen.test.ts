@@ -11,7 +11,12 @@ import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
 interface IPositiveTestCase {
   input: string;
-  expectedOutput: any;
+  expectedOutput:
+    | number
+    | string
+    | null
+    | boolean
+    | (number | string | null | boolean)[];
 }
 
 const positiveTestCases: IPositiveTestCase[] = [

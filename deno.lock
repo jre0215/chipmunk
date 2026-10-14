@@ -2,24 +2,23 @@
   "version": "5",
   "specifiers": {
     "jsr:@std/bytes@^1.0.6": "1.0.6",
-    "jsr:@std/streams@*": "1.1.0",
-    "jsr:@std/streams@^1.1.0": "1.1.0",
-    "npm:source-map@~0.7.6": "0.7.6"
+    "jsr:@std/streams@^1.2.0": "1.2.0",
+    "npm:source-map@0.8": "0.8.0"
   },
   "jsr": {
     "@std/bytes@1.0.6": {
       "integrity": "f6ac6adbd8ccd99314045f5703e23af0a68d7f7e58364b47d2c7f408aeb5820a"
     },
-    "@std/streams@1.1.0": {
-      "integrity": "2f7024d841f343fd478afe0c958a3f0f068ef2a0d2bcc954f550f97ac1fa22e3",
+    "@std/streams@1.2.0": {
+      "integrity": "256b934254778f2bf45f5713b934209ff29e9b4b7fd4ec095219966813758c5f",
       "dependencies": [
         "jsr:@std/bytes"
       ]
     }
   },
   "npm": {
-    "source-map@0.7.6": {
-      "integrity": "sha512-i5uvt8C3ikiWeNZSVZNWcfZPItFQOsYTUAOkcUPGd8DqDy1uOUikjt5dG+uRlwyvR108Fb9DOd4GvXfT0N2/uQ=="
+    "source-map@0.8.0": {
+      "integrity": "sha512-d8EqvL+k/SOXCreS/SUzg2ciyHqBBLcN/yuRjFsbvVhHTE2pgei7oAhmPM7kWFbkX6OSMQfUq4KbkF3au9lhYQ=="
     }
   },
   "redirects": {
@@ -63,8 +62,8 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@std/streams@^1.1.0",
-      "npm:source-map@~0.7.6"
+      "jsr:@std/streams@^1.2.0",
+      "npm:source-map@0.8"
     ]
   }
 }

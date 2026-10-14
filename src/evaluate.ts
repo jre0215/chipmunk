@@ -1,4 +1,5 @@
 import Environment from "./Environment.ts";
+import EvaluationError from "./EvaluationError.ts";
 import {
   ChipmunkFunction,
   ChipmunkList,
@@ -35,7 +36,7 @@ function evaluate(
           const expectedType: string =
             ChipmunkNodeType[ChipmunkNodeType.Symbol];
           const actualType: string = ChipmunkNodeType[arg1.type];
-          throw new Error(
+          throw new EvaluationError(
             `expected first argument to '${head.name}' to be of type ` +
               `${expectedType} but got type ${actualType}`,
           );
@@ -52,7 +53,7 @@ function evaluate(
           const expectedType: string =
             ChipmunkNodeType[ChipmunkNodeType.Boolean];
           const actualType: string = ChipmunkNodeType[result.type];
-          throw new Error(
+          throw new EvaluationError(
             `expected first argument to '${head.name}' to be of type ` +
               `${expectedType} but got type ${actualType}`,
           );
@@ -68,7 +69,7 @@ function evaluate(
         if (arg1.type !== ChipmunkNodeType.List) {
           const expectedType: string = ChipmunkNodeType[ChipmunkNodeType.List];
           const actualType: string = ChipmunkNodeType[arg1.type];
-          throw new Error(
+          throw new EvaluationError(
             `expected first argument to '${head.name}' to be of type ` +
               `${expectedType} but got type ${actualType}`,
           );
@@ -80,7 +81,7 @@ function evaluate(
               const expectedType: string =
                 ChipmunkNodeType[ChipmunkNodeType.Symbol];
               const actualType: string = ChipmunkNodeType[item.type];
-              throw new Error(
+              throw new EvaluationError(
                 `expected first argument to '${head.name}' to be list containing ` +
                   `items of type ${expectedType} but got type ${actualType}`,
               );
@@ -113,7 +114,7 @@ function evaluate(
           const expectedType: string =
             ChipmunkNodeType[ChipmunkNodeType.Symbol];
           const actualType: string = ChipmunkNodeType[arg1.type];
-          throw new Error(
+          throw new EvaluationError(
             `expected first argument to '${head.name}' to be of type ` +
               `${expectedType} but got type ${actualType}`,
           );
@@ -134,7 +135,7 @@ function evaluate(
     const item0: ChipmunkType = evaluatedList.items[0];
     if (item0.type !== ChipmunkNodeType.Function) {
       const actualType: string = ChipmunkNodeType[item0.type];
-      throw new Error(
+      throw new EvaluationError(
         "expected first item of list to be of type FUNCTION but got type " +
           actualType,
       );

@@ -1,4 +1,4 @@
-import { SourceNode } from "source-map";
+import { CodeWithSourceMap, SourceNode } from "source-map";
 
 import {
   JavaScriptArray,
@@ -522,10 +522,10 @@ function compileJavaScriptArray(
       sourceFile,
       indent,
     );
-    const argNodes: (SourceNode)[] = ast.items.slice(1).map((
+    const argNodes: SourceNode[] = ast.items.slice(1).map((
       item: JavaScriptNode,
     ) => compileJavaScriptToSourceNode(item, sourceFile, indent));
-    const argNodesWithCommas: any[] = [];
+    const argNodesWithCommas: (SourceNode | string)[] = [];
     for (let i: number = 0; i < argNodes.length; i++) {
       argNodesWithCommas.push(argNodes[i]);
       if (i < argNodes.length - 1) {
@@ -539,10 +539,10 @@ function compileJavaScriptArray(
       [functionNode, "(", ...argNodesWithCommas, ")"],
     );
   } else {
-    const itemNodes: (SourceNode)[] = ast.items.map((
+    const itemNodes: SourceNode[] = ast.items.map((
       item: JavaScriptNode,
     ) => compileJavaScriptToSourceNode(item, sourceFile, indent));
-    const itemNodesWithCommas: any[] = [];
+    const itemNodesWithCommas: (SourceNode | string)[] = [];
     for (let i: number = 0; i < itemNodes.length; i++) {
       itemNodesWithCommas.push(itemNodes[i]);
       if (i < itemNodes.length - 1) {
@@ -698,10 +698,10 @@ function compileJavaScriptFunctionCall(
   sourceFile: string | null = null,
   indent: number = 0,
 ): SourceNode {
-  const argNodes: (SourceNode)[] = ast.args.map((
+  const argNodes: SourceNode[] = ast.args.map((
     item: JavaScriptNode,
   ) => compileJavaScriptToSourceNode(item, sourceFile, indent));
-  const argNodesWithCommas: any[] = [];
+  const argNodesWithCommas: (SourceNode | string)[] = [];
   for (let i: number = 0; i < argNodes.length; i++) {
     argNodesWithCommas.push(argNodes[i]);
     if (i !== argNodes.length - 1) {
@@ -749,7 +749,7 @@ function compileJavaScriptIIFE(
   sourceFile: string | null = null,
   indent: number = 0,
 ): SourceNode {
-  const statementNodes: (SourceNode)[] = ast.nodes.slice(
+  const statementNodes: SourceNode[] = ast.nodes.slice(
     0,
     ast.nodes.length - 1,
   )
@@ -757,7 +757,7 @@ function compileJavaScriptIIFE(
       compileJavaScriptToSourceNode(node, sourceFile, indent + 2)
     );
   // TODO: fix statements not being aligned in the outputted JS
-  const statementNodesWithLineBreaks: any[] = [];
+  const statementNodesWithLineBreaks: (SourceNode | string)[] = [];
   for (const statementNode of statementNodes) {
     statementNodesWithLineBreaks.push(statementNode);
     statementNodesWithLineBreaks.push(";\n");
@@ -812,10 +812,10 @@ function compileJavaScriptMethodCall(
     sourceFile,
     indent,
   );
-  const argNodes: (SourceNode)[] = ast.args.map((
+  const argNodes: SourceNode[] = ast.args.map((
     item: JavaScriptNode,
   ) => compileJavaScriptToSourceNode(item, sourceFile, indent));
-  const argNodesWithCommas: any[] = [];
+  const argNodesWithCommas: (SourceNode | string)[] = [];
   for (let i: number = 0; i < argNodes.length; i++) {
     argNodesWithCommas.push(argNodes[i]);
     if (i !== argNodes.length - 1) {
@@ -951,7 +951,10 @@ function compileChipmunkFileToJavaScript(path: string): void {
   const javaScriptCodeFile: string = path.replace(/.\w+$/, ".js");
   const javaScriptSourceMapFile: string = javaScriptCodeFile + ".map";
 
-  const generatedCode: any = compileJavaScriptToSourceNode(javaScriptAst, path)
+  const generatedCode: CodeWithSourceMap = compileJavaScriptToSourceNode(
+    javaScriptAst,
+    path,
+  )
     .toStringWithSourceMap({
       file: javaScriptCodeFile,
     });

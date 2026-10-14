@@ -4,6 +4,7 @@ import interpret from "./interpret.ts";
 import replEnv from "./replEnv.ts";
 import { ChipmunkNodeType, ChipmunkString, ChipmunkType } from "./types.ts";
 import toString from "./utils/toString.ts";
+import EvaluationError from "./EvaluationError.ts";
 
 function main(): void {
   if (Deno.args.length === 0) {
@@ -36,8 +37,12 @@ async function runChipmunkRepl(): Promise<void> {
         let result: ChipmunkType;
         try {
           result = interpret(line, replEnv);
-        } catch (e) {
-          Deno.stdout.writeSync(new TextEncoder().encode(e.message + "\n"));
+        } catch (e: unknown) {
+          if (e instanceof EvaluationError) {
+            Deno.stdout.writeSync(new TextEncoder().encode(e.message + "\n"));
+          } else {
+            console.log("An unexpected error occurred", e);
+          }
           continue;
         }
         replEnv.set("_", result);
