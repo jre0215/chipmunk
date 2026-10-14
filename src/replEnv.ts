@@ -193,7 +193,7 @@ defineChipmunkFunction(
 
 defineChipmunkFunction(
   "read-line",
-  (args: ChipmunkType[]): ChipmunkString => {
+  (): ChipmunkString => {
     throw new Error("not implemented");
   },
 );

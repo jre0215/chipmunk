@@ -63,11 +63,12 @@ class Parser {
         return this.parseString();
       case TokenType.Symbol:
         return this.parseSymbol();
-      default:
+      default: {
         const actualType: string = TokenType[this.peek().type];
         throw new Error(
           `expected expression but got token of type ${actualType}`,
         );
+      }
     }
   }
 

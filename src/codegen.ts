@@ -625,7 +625,6 @@ function compileJavaScriptBinaryOperation(
 function compileJavaScriptBoolean(
   ast: JavaScriptBoolean,
   sourceFile: string | null = null,
-  indent: number = 0,
 ): SourceNode {
   return new SourceNode(
     ast.line,
@@ -910,7 +909,7 @@ function compileJavaScriptToSourceNode(
   } else if (ast.type === JavaScriptNodeType.BINARY_OPERATION) {
     return compileJavaScriptBinaryOperation(ast, sourceFile, indent);
   } else if (ast.type === JavaScriptNodeType.BOOLEAN) {
-    return compileJavaScriptBoolean(ast, sourceFile, indent);
+    return compileJavaScriptBoolean(ast, sourceFile);
   } else if (ast.type === JavaScriptNodeType.CONDITIONAL_OPERATION) {
     return compileJavaScriptConditionalOperation(ast, sourceFile, indent);
   } else if (ast.type === JavaScriptNodeType.CONSOLE_LOG_STATEMENT) {
