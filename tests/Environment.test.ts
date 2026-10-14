@@ -1,7 +1,4 @@
-import {
-  assertEquals,
-  assertThrows,
-} from "https://deno.land/std/testing/asserts.ts";
+import { assertEquals, assertThrows } from "@std/assert";
 
 import Environment from "../src/Environment.ts";
 import { ChipmunkNodeType } from "../src/types.ts";

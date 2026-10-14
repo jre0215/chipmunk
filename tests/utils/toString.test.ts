@@ -2,7 +2,7 @@ import interpret from "../../src/interpret.ts";
 import replEnv from "../../src/replEnv.ts";
 import toString from "../../src/utils/toString.ts";
 
-import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
+import { assertEquals } from "@std/assert";
 
 interface ITestCase {
   input: string;

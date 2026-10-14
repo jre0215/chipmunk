@@ -1,7 +1,7 @@
 import type { Token } from "../src/tokens.ts";
 import Parser from "../src/Parser.ts";
 import Tokenizer from "../src/Tokenizer.ts";
-import { assertThrows } from "https://deno.land/std/testing/asserts.ts";
+import { assertThrows } from "@std/assert";
 
 interface INegativeTestCase {
   input: string;

@@ -7,7 +7,7 @@ import {
 import Parser from "../src/Parser.ts";
 import Tokenizer from "../src/Tokenizer.ts";
 
-import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
+import { assertEquals } from "@std/assert";
 
 interface IPositiveTestCase {
   input: string;

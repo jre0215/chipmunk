@@ -1,5 +1,6 @@
 {
   "imports": {
+    "@std/assert": "jsr:@std/assert@^1.0.19",
     "@std/streams": "jsr:@std/streams@^1.2.0",
     "source-map": "npm:source-map@^0.8.0"
   }

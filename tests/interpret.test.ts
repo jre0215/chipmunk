@@ -1,10 +1,7 @@
 import interpret from "../src/interpret.ts";
 import replEnv from "../src/replEnv.ts";
 import toString from "../src/utils/toString.ts";
-import {
-  assertEquals,
-  assertThrows,
-} from "https://deno.land/std/testing/asserts.ts";
+import { assertEquals, assertThrows } from "@std/assert";
 
 interface IPositiveTestCase {
   input: string;
