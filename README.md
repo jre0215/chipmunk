@@ -8,7 +8,7 @@ It's implemented in [TypeScript](https://www.typescriptlang.org/) and runs on
 
 Print the factorials of the numbers 1 to 10:
 
-```lisp
+```clojure
 (do
   (def factorial (lambda (x)
     (if (= x 0)
@@ -18,6 +18,8 @@ Print the factorials of the numbers 1 to 10:
 
 ; prints "[1 1 2 6 24 120 720 5040 40320 362880]"
 ```
+
+See the [documentation](docs/functions.md) for a list of functions
 
 ## Command Line Interface
 
@@ -41,13 +43,10 @@ npm run chipmunk -- examples/game-of-life.chip
 npm run chipmunk -- examples/factorial.chip 10
 ```
 
-To compile a Chipmunk program to JavaScript:
+To compile a Chipmunk program to JavaScript and run it:
 
 ```sh
-# Compile to JavaScript
 npm run compile -- examples/game-of-life.chip
-
-# Run the compiled JavaScript
 node examples/game-of-life.js
 ```
 
@@ -56,11 +55,3 @@ To run tests:
 ```sh
 npm test
 ```
-
-## Resources
-
-- [Visual Studio Code extension](https://github.com/escamilla/chipmunk-lang)
-  (provides syntax highlighting)
-- [Documentation of core functions](docs/functions.md)
-- [Source map visualization tool](https://sokra.github.io/source-map-visualization/)
-  (made by someone else)
