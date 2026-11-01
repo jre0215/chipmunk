@@ -37,15 +37,15 @@ To run a Chipmunk program (any extra arguments are available to the program as
 `argv`):
 
 ```sh
-npm run chipmunk -- examples/game-of-life.ch
-npm run chipmunk -- examples/factorial.ch 10
+npm run chipmunk -- examples/game-of-life.chip
+npm run chipmunk -- examples/factorial.chip 10
 ```
 
 To compile a Chipmunk program to JavaScript:
 
 ```sh
 # Compile to JavaScript
-npm run compile -- examples/game-of-life.ch
+npm run compile -- examples/game-of-life.chip
 
 # Run the compiled JavaScript
 node examples/game-of-life.js
