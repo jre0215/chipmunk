@@ -5,7 +5,7 @@ class Tokenizer {
   private line: number = 1;
   private column: number = 1;
 
-  public constructor(private readonly input: string) { }
+  public constructor(private readonly input: string) {}
 
   public tokenize(): Token[] {
     const tokens: Token[] = [];
@@ -159,9 +159,7 @@ class Tokenizer {
     const line: number = this.line;
     const column: number = this.column;
 
-    if (
-      this.isDigit(char) || (char === "-" && this.isDigit(this.lookAhead()))
-    ) {
+    if (this.isDigit(char) || (char === "-" && this.isDigit(this.lookAhead()))) {
       return { type: TokenType.Number, value: this.readNumber(), line, column };
     }
 

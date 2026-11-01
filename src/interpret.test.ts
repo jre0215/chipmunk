@@ -1,5 +1,5 @@
-import test from 'node:test';
-import assert from 'node:assert';
+import test from "node:test";
+import assert from "node:assert";
 
 import interpret from "./interpret.js";
 import replEnv from "./replEnv.js";
@@ -142,11 +142,9 @@ const negativeTestCases: INegativeTestCase[] = [
 positiveTestCases.forEach((testCase: IPositiveTestCase) => {
   const name = `${testCase.input} => ${testCase.expectedOutput}`;
   test(name, () => {
-    const actualOutput: string = toString(
-      interpret(testCase.input, replEnv),
-    );
+    const actualOutput: string = toString(interpret(testCase.input, replEnv));
     assert.deepStrictEqual(actualOutput, testCase.expectedOutput);
-  })
+  });
 });
 
 negativeTestCases.forEach((testCase: INegativeTestCase) => {

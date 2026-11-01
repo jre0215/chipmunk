@@ -1,24 +1,16 @@
-import test from 'node:test';
-import assert from 'node:assert';
+import test from "node:test";
+import assert from "node:assert";
+import { runInThisContext } from "node:vm";
 
 import type { JavaScriptNode } from "./jstypes.js";
 import type { ChipmunkType } from "./types.js";
-import {
-  compileJavaScriptToSourceNode,
-  convertChipmunkNodeToJavaScriptNode,
-} from "./codegen.js";
+import { compileJavaScriptToSourceNode, convertChipmunkNodeToJavaScriptNode } from "./codegen.js";
 import Parser from "./Parser.js";
 import Tokenizer from "./Tokenizer.js";
 
-
 interface IPositiveTestCase {
   input: string;
-  expectedOutput:
-  | number
-  | string
-  | null
-  | boolean
-  | (number | string | null | boolean)[];
+  expectedOutput: number | string | null | boolean | (number | string | null | boolean)[];
 }
 
 const positiveTestCases: IPositiveTestCase[] = [
@@ -67,8 +59,7 @@ const positiveTestCases: IPositiveTestCase[] = [
   { input: `(if 1 "true" "false")`, expectedOutput: "true" },
   { input: `(if 0 "true" "false")`, expectedOutput: "false" },
   {
-    input:
-      `(do (def factorial (lambda (x) (if (= x 0) 1 (* x (factorial (- x 1)))))) (factorial 10))`,
+    input: `(do (def factorial (lambda (x) (if (= x 0) 1 (* x (factorial (- x 1)))))) (factorial 10))`,
     expectedOutput: 3628800,
   },
   { input: `(abs -1)`, expectedOutput: 1 },
@@ -96,14 +87,9 @@ positiveTestCases.forEach((testCase: IPositiveTestCase) => {
     const tokenizer: Tokenizer = new Tokenizer(testCase.input);
     const parser: Parser = new Parser(tokenizer.tokenize());
     const chipmunkAst: ChipmunkType = parser.parse();
-    const javaScriptAst: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-      chipmunkAst,
-      true,
-    );
-    const javaScriptCode: string = compileJavaScriptToSourceNode(
-      javaScriptAst,
-    ).toString();
-    const actualOutput: string = eval(javaScriptCode);
+    const javaScriptAst: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(chipmunkAst, true);
+    const javaScriptCode: string = compileJavaScriptToSourceNode(javaScriptAst).toString();
+    const actualOutput: string = runInThisContext(javaScriptCode);
     assert.deepStrictEqual(actualOutput, testCase.expectedOutput);
-  })
+  });
 });

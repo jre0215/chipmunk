@@ -1,5 +1,5 @@
-import test from 'node:test';
-import assert from 'node:assert';
+import test from "node:test";
+import assert from "node:assert";
 
 import type { Token } from "./tokens.js";
 import Parser from "./Parser.js";
@@ -21,13 +21,11 @@ const negativeTests: INegativeTestCase[] = [
   },
   {
     input: "[",
-    reason:
-      "an opening square bracket must have a matching closing square bracket",
+    reason: "an opening square bracket must have a matching closing square bracket",
   },
   {
     input: "]",
-    reason:
-      "a closing square bracket must have a matching opening square bracket",
+    reason: "a closing square bracket must have a matching opening square bracket",
   },
   { input: "foo bar", reason: "there can only be one topmost expression" },
   {
@@ -47,5 +45,5 @@ negativeTests.forEach((testCase: INegativeTestCase) => {
     const tokens: Token[] = tokenizer.tokenize();
     const parser: Parser = new Parser(tokens);
     assert.throws(() => parser.parse());
-  })
+  });
 });

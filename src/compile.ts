@@ -1,4 +1,4 @@
-import { argv } from 'node:process';
+import { argv } from "node:process";
 
 import { compileChipmunkFileToJavaScript } from "./codegen.js";
 

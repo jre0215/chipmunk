@@ -1,5 +1,5 @@
-import test from 'node:test';
-import assert from 'node:assert';
+import test from "node:test";
+import assert from "node:assert";
 
 import interpret from "../interpret.js";
 import replEnv from "../replEnv.js";
@@ -37,10 +37,7 @@ const testCases: ITestCase[] = [
 testCases.forEach((testCase: ITestCase) => {
   const name = `\`${testCase.input}\` => \`${testCase.expectedOutput}\` (printable = ${testCase.printable})`;
   test(name, () => {
-    const actualOutput: string = toString(
-      interpret(testCase.input, replEnv),
-      testCase.printable,
-    );
+    const actualOutput: string = toString(interpret(testCase.input, replEnv), testCase.printable);
     assert.strictEqual(actualOutput, testCase.expectedOutput);
-  })
+  });
 });

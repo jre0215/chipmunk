@@ -13,7 +13,7 @@ import {
 class Parser {
   private position: number = 0;
 
-  public constructor(private readonly tokens: Token[]) { }
+  public constructor(private readonly tokens: Token[]) {}
 
   public parse(): ChipmunkType {
     const result: ChipmunkType = this.parseExpression();
@@ -42,9 +42,7 @@ class Parser {
     if (token.type === expectedType) {
       return token;
     }
-    throw new Error(
-      `Expected token of type ${expectedType} but got token of type ${token.type}`,
-    );
+    throw new Error(`Expected token of type ${expectedType} but got token of type ${token.type}`);
   }
 
   private parseExpression(): ChipmunkType {
@@ -65,9 +63,7 @@ class Parser {
         return this.parseSymbol();
       default: {
         const actualType: string = TokenType[this.peek().type];
-        throw new Error(
-          `expected expression but got token of type ${actualType}`,
-        );
+        throw new Error(`expected expression but got token of type ${actualType}`);
       }
     }
   }
@@ -79,9 +75,7 @@ class Parser {
       const key: ChipmunkType = this.parseExpression();
       if (key.type !== ChipmunkNodeType.String) {
         const actualType: string = ChipmunkNodeType[key.type];
-        throw new Error(
-          `expected dictionary key to be of type STRING, but got type ${actualType}`,
-        );
+        throw new Error(`expected dictionary key to be of type STRING, but got type ${actualType}`);
       }
       const value: ChipmunkType = this.parseExpression();
       entries.set(key.value, value);

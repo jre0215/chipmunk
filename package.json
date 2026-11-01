@@ -2,9 +2,30 @@
   "name": "chipmunk",
   "version": "1.0.0",
   "description": "Chipmunk is a Lisp interpreter with partial support for compiling to JavaScript. It's implemented in TypeScript and runs on Node.js. The goal is to someday achieve self-hosting.",
+  "keywords": [],
+  "homepage": "https://github.com/jre0215/chipmunk#readme",
+  "bugs": {
+    "url": "https://github.com/jre0215/chipmunk/issues"
+  },
+  "license": "MIT",
+  "author": "Joshua Escamilla",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jre0215/chipmunk.git"
+  },
   "directories": {
     "doc": "docs",
     "example": "examples"
+  },
+  "type": "module",
+  "scripts": {
+    "chipmunk": "tsx src/index.ts",
+    "compile": "tsx src/compile.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "tsc --noEmit && node --import tsx --test 'src/**/*.test.ts'",
+    "lint": "oxlint",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
   },
   "dependencies": {
     "source-map": "^0.8.0",
@@ -12,24 +33,8 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
+    "oxfmt": "^0.75.0",
+    "oxlint": "^1.90.0",
     "typescript": "^7.0.2"
-  },
-  "scripts": {
-    "chipmunk": "tsx src/index.ts",
-    "compile": "tsx src/compile.ts",
-    "typecheck": "tsc --noEmit",
-    "test": "tsc --noEmit && node --import tsx --test 'src/**/*.test.ts'"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jre0215/chipmunk.git"
-  },
-  "keywords": [],
-  "author": "Joshua Escamilla",
-  "license": "MIT",
-  "type": "module",
-  "bugs": {
-    "url": "https://github.com/jre0215/chipmunk/issues"
-  },
-  "homepage": "https://github.com/jre0215/chipmunk#readme"
+  }
 }

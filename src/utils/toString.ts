@@ -7,16 +7,15 @@ function toString(ast: ChipmunkType, printable: boolean = false): string {
   } else if (ast.type === ChipmunkNodeType.Function) {
     if (ast.isUserDefined) {
       const stringParams: string = (ast.params as ChipmunkSymbol[])
-        .map((param: ChipmunkSymbol): string => param.name).join(" ");
+        .map((param: ChipmunkSymbol): string => param.name)
+        .join(" ");
       const stringBody: string = toString(ast.body as ChipmunkType);
       return `(lambda (${stringParams}) ${stringBody})`;
     } else {
       return ast.name as string;
     }
   } else if (ast.type === ChipmunkNodeType.List) {
-    const joined = ast.items.map((item: ChipmunkType) => toString(item)).join(
-      " ",
-    );
+    const joined = ast.items.map((item: ChipmunkType) => toString(item)).join(" ");
     return `(${joined})`;
   } else if (ast.type === ChipmunkNodeType.Map) {
     const chunks: string[] = [];
@@ -38,9 +37,7 @@ function toString(ast: ChipmunkType, printable: boolean = false): string {
   } else if (ast.type === ChipmunkNodeType.Symbol) {
     return ast.name;
   } else if (ast.type === ChipmunkNodeType.Vector) {
-    const joined = ast.items.map((item: ChipmunkType) => toString(item)).join(
-      " ",
-    );
+    const joined = ast.items.map((item: ChipmunkType) => toString(item)).join(" ");
     return `[${joined}]`;
   }
   throw new Error("unknown data type");

@@ -1,5 +1,5 @@
-import * as readline from 'node:readline/promises';
-import { argv, stdin as input, stdout as output } from 'node:process';
+import * as readline from "node:readline/promises";
+import { argv, stdin as input, stdout as output } from "node:process";
 
 import interpret from "./interpret.js";
 import replEnv from "./replEnv.js";
@@ -17,12 +17,14 @@ function main(): void {
 
 async function runChipmunkRepl(): Promise<void> {
   console.log('Enter "exit" or press ^C to exit\n');
-  console.log('Tip: The underscore symbol ("_") always contains the value of the last expression\n');
+  console.log(
+    'Tip: The underscore symbol ("_") always contains the value of the last expression\n',
+  );
   const rl = readline.createInterface({ input, output });
   while (true) {
     let line: string;
     try {
-      line = await rl.question('> ');
+      line = await rl.question("> ");
     } catch (e: unknown) {
       // Ctrl+C and Ctrl+D reject the pending question with an AbortError.
       if (e instanceof Error && e.name === "AbortError") {
@@ -43,7 +45,7 @@ async function runChipmunkRepl(): Promise<void> {
         result = interpret(line, replEnv);
       } catch (e: unknown) {
         if (e instanceof EvaluationError) {
-          console.log(e.message + '\n');
+          console.log(e.message + "\n");
         } else {
           console.log("An unexpected error occurred", e);
         }
