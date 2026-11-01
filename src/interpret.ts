@@ -1,8 +1,8 @@
-import type Environment from "./Environment.ts";
-import type { ChipmunkType } from "./types.ts";
-import evaluate from "./evaluate.ts";
-import Parser from "./Parser.ts";
-import Tokenizer from "./Tokenizer.ts";
+import type Environment from "./Environment.js";
+import type { ChipmunkType } from "./types.js";
+import evaluate from "./evaluate.js";
+import Parser from "./Parser.js";
+import Tokenizer from "./Tokenizer.js";
 
 function interpret(
   input: string,

@@ -1,4 +1,4 @@
-import type { ChipmunkSymbol, ChipmunkType } from "./types.ts";
+import type { ChipmunkSymbol, ChipmunkType } from "./types.js";
 
 class Environment {
   private data: Map<string, ChipmunkType> = new Map();
@@ -9,7 +9,7 @@ class Environment {
     bindExpressions: ChipmunkType[] = [],
   ) {
     for (let i: number = 0; i < bindSymbols.length; i++) {
-      this.set(bindSymbols[i].name, bindExpressions[i]);
+      this.set(bindSymbols[i]!.name, bindExpressions[i]!);
     }
   }
 

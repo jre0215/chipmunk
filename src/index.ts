@@ -1,58 +1,58 @@
-import { TextLineStream } from "@std/streams/text-line-stream";
+import * as readline from 'node:readline/promises';
+import { argv, stdin as input, stdout as output } from 'node:process';
 
-import interpret from "./interpret.ts";
-import replEnv from "./replEnv.ts";
-import { ChipmunkNodeType, ChipmunkString, ChipmunkType } from "./types.ts";
-import toString from "./utils/toString.ts";
-import EvaluationError from "./EvaluationError.ts";
+import interpret from "./interpret.js";
+import replEnv from "./replEnv.js";
+import { ChipmunkNodeType, type ChipmunkString, type ChipmunkType } from "./types.js";
+import toString from "./utils/toString.js";
+import EvaluationError from "./EvaluationError.js";
 
 function main(): void {
-  if (Deno.args.length === 0) {
+  if (argv.length < 3) {
     runChipmunkRepl();
   } else {
-    runChipmunkProgram(Deno.args);
+    runChipmunkProgram(argv.slice(2));
   }
 }
 
 async function runChipmunkRepl(): Promise<void> {
-  Deno.stdout.writeSync(
-    new TextEncoder().encode('Enter "exit" or press ^C to exit\n'),
-  );
-  Deno.stdout.writeSync(
-    new TextEncoder().encode(
-      'Tip: The underscore symbol ("_") always contains the value of the last expression\n',
-    ),
-  );
-  const stdinReadable = Deno.stdin.readable
-    .pipeThrough(new TextDecoderStream())
-    .pipeThrough(new TextLineStream());
+  console.log('Enter "exit" or press ^C to exit\n');
+  console.log('Tip: The underscore symbol ("_") always contains the value of the last expression\n');
+  const rl = readline.createInterface({ input, output });
   while (true) {
-    Deno.stdout.writeSync(new TextEncoder().encode("> "));
-    for await (const line of stdinReadable) {
-      const trimmedLine = line.trim();
-      if (trimmedLine.length > 0) {
-        if (trimmedLine === "exit") {
-          Deno.exit(0);
-        }
-        let result: ChipmunkType;
-        try {
-          result = interpret(line, replEnv);
-        } catch (e: unknown) {
-          if (e instanceof EvaluationError) {
-            Deno.stdout.writeSync(new TextEncoder().encode(e.message + "\n"));
-          } else {
-            console.log("An unexpected error occurred", e);
-          }
-          continue;
-        }
-        replEnv.set("_", result);
-        if (result.type !== ChipmunkNodeType.Nil) {
-          Deno.stdout.writeSync(
-            new TextEncoder().encode(toString(result) + "\n"),
-          );
-        }
+    let line: string;
+    try {
+      line = await rl.question('> ');
+    } catch (e: unknown) {
+      // Ctrl+C and Ctrl+D reject the pending question with an AbortError.
+      if (e instanceof Error && e.name === "AbortError") {
+        console.log();
+        rl.close();
+        process.exit();
       }
-      Deno.stdout.writeSync(new TextEncoder().encode("> "));
+      throw e;
+    }
+    const trimmedLine = line.trim();
+    if (trimmedLine.length > 0) {
+      if (trimmedLine === "exit") {
+        rl.close();
+        process.exit();
+      }
+      let result: ChipmunkType;
+      try {
+        result = interpret(line, replEnv);
+      } catch (e: unknown) {
+        if (e instanceof EvaluationError) {
+          console.log(e.message + '\n');
+        } else {
+          console.log("An unexpected error occurred", e);
+        }
+        continue;
+      }
+      replEnv.set("_", result);
+      if (result.type !== ChipmunkNodeType.Nil) {
+        console.log(toString(result) + "\n");
+      }
     }
   }
 }
@@ -71,9 +71,7 @@ function runChipmunkProgram(args: string[]): void {
     items: chipmunkArgv,
   });
   interpret(`(load-file "${programName}")`, replEnv);
-  Deno.exit(0);
+  process.exit();
 }
 
-if (import.meta.main) {
-  main();
-}
+main();

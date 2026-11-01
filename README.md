@@ -1,8 +1,8 @@
 # Chipmunk
 
 Chipmunk is a Lisp interpreter with partial support for compiling to JavaScript.
-It's implemented in [TypeScript](https://www.typescriptlang.org/) using the
-[Deno](https://deno.com/) runtime. The goal is to someday achieve self-hosting.
+It's implemented in [TypeScript](https://www.typescriptlang.org/) and runs on
+[Node.js](https://nodejs.org/). The goal is to someday achieve self-hosting.
 
 ## Example Program
 
@@ -21,32 +21,40 @@ Print the factorials of the numbers 1 to 10:
 
 ## Command Line Interface
 
+First, install dependencies:
+
+```sh
+npm install
+```
+
 To start a Chipmunk REPL:
 
 ```sh
-deno run src/index.ts
+npm run chipmunk
 ```
 
-To run a Chipmunk program:
+To run a Chipmunk program (any extra arguments are available to the program as
+`argv`):
 
 ```sh
-deno run --allow-read src/index.ts examples/game-of-life.ch
+npm run chipmunk -- examples/game-of-life.ch
+npm run chipmunk -- examples/factorial.ch 10
 ```
 
 To compile a Chipmunk program to JavaScript:
 
 ```sh
 # Compile to JavaScript
-deno run --allow-read --allow-write src/compile.ts examples/game-of-life.ch
+npm run compile -- examples/game-of-life.ch
 
 # Run the compiled JavaScript
-deno run examples/game-of-life.js
+node examples/game-of-life.js
 ```
 
 To run tests:
 
 ```sh
-deno test
+npm test
 ```
 
 ## Resources

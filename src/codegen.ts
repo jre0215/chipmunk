@@ -1,34 +1,36 @@
-import { CodeWithSourceMap, SourceNode } from "source-map";
+import { readFileSync, writeFileSync } from 'node:fs';
+
+import { type CodeWithSourceMap, SourceNode } from "source-map";
 
 import {
-  JavaScriptArray,
-  JavaScriptArrayAccess,
-  JavaScriptAssignmentOperation,
-  JavaScriptBinaryOperation,
-  JavaScriptBoolean,
-  JavaScriptConditionalOperation,
-  JavaScriptConsoleLogStatement,
-  JavaScriptFunctionCall,
-  JavaScriptFunctionDefinition,
-  JavaScriptIIFE,
-  JavaScriptMethodCall,
-  JavaScriptNode,
+  type JavaScriptArray,
+  type JavaScriptArrayAccess,
+  type JavaScriptAssignmentOperation,
+  type JavaScriptBinaryOperation,
+  type JavaScriptBoolean,
+  type JavaScriptConditionalOperation,
+  type JavaScriptConsoleLogStatement,
+  type JavaScriptFunctionCall,
+  type JavaScriptFunctionDefinition,
+  type JavaScriptIIFE,
+  type JavaScriptMethodCall,
+  type JavaScriptNode,
   JavaScriptNodeType,
-  JavaScriptNull,
-  JavaScriptNumber,
-  JavaScriptPropertyAccess,
-  JavaScriptString,
-  JavaScriptVariable,
-} from "./jstypes.ts";
-import Parser from "./Parser.ts";
-import Tokenizer from "./Tokenizer.ts";
+  type JavaScriptNull,
+  type JavaScriptNumber,
+  type JavaScriptPropertyAccess,
+  type JavaScriptString,
+  type JavaScriptVariable,
+} from "./jstypes.js";
+import Parser from "./Parser.js";
+import Tokenizer from "./Tokenizer.js";
 import {
-  ChipmunkList,
+  type ChipmunkList,
   ChipmunkNodeType,
-  ChipmunkSymbol,
-  ChipmunkType,
-} from "./types.ts";
-import escapeString from "./utils/escapeString.ts";
+  type ChipmunkSymbol,
+  type ChipmunkType,
+} from "./types.js";
+import escapeString from "./utils/escapeString.js";
 
 const binaryOperators: string[] = [
   "!=",
@@ -68,7 +70,7 @@ function convertChipmunkNodeToJavaScriptNode(
   }
 
   if (ast.type === ChipmunkNodeType.List) {
-    const head: ChipmunkType = ast.items[0];
+    const head: ChipmunkType = ast.items[0]!;
     if (head.type === ChipmunkNodeType.Symbol) {
       if (binaryOperators.includes(head.name)) {
         let operator: string = head.name;
@@ -82,11 +84,11 @@ function convertChipmunkNodeToJavaScriptNode(
           operator = "||";
         }
         const leftSide: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[1],
+          ast.items[1]!,
           false,
         );
         const rightSide: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[2],
+          ast.items[2]!,
           false,
         );
         return {
@@ -99,7 +101,7 @@ function convertChipmunkNodeToJavaScriptNode(
         };
       } else if (head.name === "abs") {
         const argument: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[1],
+          ast.items[1]!,
           false,
         );
         return {
@@ -121,21 +123,21 @@ function convertChipmunkNodeToJavaScriptNode(
         );
         return {
           type: JavaScriptNodeType.METHOD_CALL,
-          object: items[0],
+          object: items[0]!,
           methodName: "concat",
           args: items.slice(1),
           line,
           column,
         };
       } else if (head.name === "def") {
-        if (ast.items[1].type !== ChipmunkNodeType.Symbol) {
+        if (ast.items[1]!.type !== ChipmunkNodeType.Symbol) {
           throw new Error("first argument to def must be a symbol");
         }
         const name: string = sanitizeJavaScriptIdentifier(
           (ast.items[1] as ChipmunkSymbol).name,
         );
         const value: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[2],
+          ast.items[2]!,
           false,
         );
         return {
@@ -158,7 +160,7 @@ function convertChipmunkNodeToJavaScriptNode(
         };
       } else if (head.name === "head") {
         const array: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[1],
+          ast.items[1]!,
           false,
         );
         return {
@@ -175,15 +177,15 @@ function convertChipmunkNodeToJavaScriptNode(
         };
       } else if (head.name === "if") {
         const condition: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[1],
+          ast.items[1]!,
           false,
         );
         const valueIfTrue: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[2],
+          ast.items[2]!,
           false,
         );
         const valueIfFalse: JavaScriptNode =
-          convertChipmunkNodeToJavaScriptNode(ast.items[3], false);
+          convertChipmunkNodeToJavaScriptNode(ast.items[3]!, false);
         return {
           type: JavaScriptNodeType.CONDITIONAL_OPERATION,
           condition,
@@ -194,11 +196,11 @@ function convertChipmunkNodeToJavaScriptNode(
         };
       } else if (head.name === "join") {
         const firstList: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[1],
+          ast.items[1]!,
           false,
         );
         const secondList: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[2],
+          ast.items[2]!,
           false,
         );
         return {
@@ -210,7 +212,7 @@ function convertChipmunkNodeToJavaScriptNode(
           column,
         };
       } else if (head.name === "lambda") {
-        if (ast.items[1].type !== ChipmunkNodeType.List) {
+        if (ast.items[1]!.type !== ChipmunkNodeType.List) {
           throw new Error(
             "first argument to lambda must be list of parameters",
           );
@@ -223,7 +225,7 @@ function convertChipmunkNodeToJavaScriptNode(
           sanitizeJavaScriptIdentifier(item.name)
         );
         const body: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[2],
+          ast.items[2]!,
           false,
         );
         return {
@@ -235,7 +237,7 @@ function convertChipmunkNodeToJavaScriptNode(
         };
       } else if (head.name === "length") {
         const object: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[1],
+          ast.items[1]!,
           false,
         );
         return {
@@ -247,11 +249,11 @@ function convertChipmunkNodeToJavaScriptNode(
         };
       } else if (head.name === "map") {
         const fn: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[1],
+          ast.items[1]!,
           false,
         );
         const object: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[2],
+          ast.items[2]!,
           false,
         );
         return {
@@ -264,11 +266,11 @@ function convertChipmunkNodeToJavaScriptNode(
         };
       } else if (head.name === "nth") {
         const array: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[1],
+          ast.items[1]!,
           false,
         );
         const index: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[2],
+          ast.items[2]!,
           false,
         );
         return {
@@ -280,7 +282,7 @@ function convertChipmunkNodeToJavaScriptNode(
         };
       } else if (head.name === "parse-integer") {
         const object: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[1],
+          ast.items[1]!,
           false,
         );
         return {
@@ -305,7 +307,7 @@ function convertChipmunkNodeToJavaScriptNode(
             column,
           };
         } else {
-          object = convertChipmunkNodeToJavaScriptNode(ast.items[1], false);
+          object = convertChipmunkNodeToJavaScriptNode(ast.items[1]!, false);
         }
         return {
           type: JavaScriptNodeType.CONSOLE_LOG_STATEMENT,
@@ -315,7 +317,7 @@ function convertChipmunkNodeToJavaScriptNode(
         };
       } else if (head.name === "range") {
         const n: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[1],
+          ast.items[1]!,
           false,
         );
         return {
@@ -348,13 +350,13 @@ function convertChipmunkNodeToJavaScriptNode(
         };
       } else if (head.name === "reduce") {
         const fn: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[1],
+          ast.items[1]!,
           false,
         );
         const initialValue: JavaScriptNode =
-          convertChipmunkNodeToJavaScriptNode(ast.items[2], false);
+          convertChipmunkNodeToJavaScriptNode(ast.items[2]!, false);
         const object: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[3],
+          ast.items[3]!,
           false,
         );
         return {
@@ -367,7 +369,7 @@ function convertChipmunkNodeToJavaScriptNode(
         };
       } else if (head.name === "sum") {
         const object: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[1],
+          ast.items[1]!,
           false,
         );
         return {
@@ -408,7 +410,7 @@ function convertChipmunkNodeToJavaScriptNode(
         };
       } else if (head.name === "to-string") {
         const object: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-          ast.items[1],
+          ast.items[1]!,
           false,
         );
         return {
@@ -449,7 +451,7 @@ function convertChipmunkNodeToJavaScriptNode(
       return {
         type: JavaScriptNodeType.VARIABLE,
         name:
-          "((typeof Deno !== 'undefined') ? Deno.args : process.argv.slice(2))",
+          "process.argv.slice(2)",
         line,
         column,
       };
@@ -516,7 +518,7 @@ function compileJavaScriptArray(
     );
   }
 
-  if (ast.items[0].type === JavaScriptNodeType.FUNCTION_DEFINITION) {
+  if (ast.items[0]!.type === JavaScriptNodeType.FUNCTION_DEFINITION) {
     const functionNode: SourceNode = compileJavaScriptToSourceNode(
       ast.items[0],
       sourceFile,
@@ -527,7 +529,7 @@ function compileJavaScriptArray(
     ) => compileJavaScriptToSourceNode(item, sourceFile, indent));
     const argNodesWithCommas: (SourceNode | string)[] = [];
     for (let i: number = 0; i < argNodes.length; i++) {
-      argNodesWithCommas.push(argNodes[i]);
+      argNodesWithCommas.push(argNodes[i]!);
       if (i < argNodes.length - 1) {
         argNodesWithCommas.push(", ");
       }
@@ -544,7 +546,7 @@ function compileJavaScriptArray(
     ) => compileJavaScriptToSourceNode(item, sourceFile, indent));
     const itemNodesWithCommas: (SourceNode | string)[] = [];
     for (let i: number = 0; i < itemNodes.length; i++) {
-      itemNodesWithCommas.push(itemNodes[i]);
+      itemNodesWithCommas.push(itemNodes[i]!);
       if (i < itemNodes.length - 1) {
         itemNodesWithCommas.push(", ");
       }
@@ -702,7 +704,7 @@ function compileJavaScriptFunctionCall(
   ) => compileJavaScriptToSourceNode(item, sourceFile, indent));
   const argNodesWithCommas: (SourceNode | string)[] = [];
   for (let i: number = 0; i < argNodes.length; i++) {
-    argNodesWithCommas.push(argNodes[i]);
+    argNodesWithCommas.push(argNodes[i]!);
     if (i !== argNodes.length - 1) {
       argNodesWithCommas.push(", ");
     }
@@ -762,7 +764,7 @@ function compileJavaScriptIIFE(
     statementNodesWithLineBreaks.push(";\n");
   }
   const returnValueNode: SourceNode = compileJavaScriptToSourceNode(
-    ast.nodes[ast.nodes.length - 1],
+    ast.nodes[ast.nodes.length - 1]!,
     sourceFile,
     indent + 2,
   );
@@ -816,7 +818,7 @@ function compileJavaScriptMethodCall(
   ) => compileJavaScriptToSourceNode(item, sourceFile, indent));
   const argNodesWithCommas: (SourceNode | string)[] = [];
   for (let i: number = 0; i < argNodes.length; i++) {
-    argNodesWithCommas.push(argNodes[i]);
+    argNodesWithCommas.push(argNodes[i]!);
     if (i !== argNodes.length - 1) {
       argNodesWithCommas.push(", ");
     }
@@ -938,7 +940,7 @@ function compileJavaScriptToSourceNode(
 }
 
 function compileChipmunkFileToJavaScript(path: string): void {
-  const input: string = Deno.readTextFileSync(path);
+  const input: string = readFileSync(path, 'utf8');
   const tokenizer: Tokenizer = new Tokenizer(`(do ${input})`);
   const parser: Parser = new Parser(tokenizer.tokenize());
   const chipmunkAst: ChipmunkType = parser.parse();
@@ -957,12 +959,12 @@ function compileChipmunkFileToJavaScript(path: string): void {
     .toStringWithSourceMap({
       file: javaScriptCodeFile,
     });
-  Deno.writeTextFileSync(
+  writeFileSync(
     javaScriptCodeFile,
     generatedCode.code + "\n//# sourceMappingURL=" + javaScriptSourceMapFile +
-      "\n",
+    "\n",
   );
-  Deno.writeTextFileSync(javaScriptSourceMapFile, generatedCode.map.toString());
+  writeFileSync(javaScriptSourceMapFile, generatedCode.map.toString());
 }
 
 export {

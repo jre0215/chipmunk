@@ -1,19 +1,19 @@
-import { Token, TokenType } from "./tokens.ts";
+import { type Token, TokenType } from "./tokens.js";
 import {
-  ChipmunkList,
-  ChipmunkMap,
+  type ChipmunkList,
+  type ChipmunkMap,
   ChipmunkNodeType,
-  ChipmunkNumber,
-  ChipmunkString,
-  ChipmunkSymbol,
-  ChipmunkType,
-  ChipmunkVector,
-} from "./types.ts";
+  type ChipmunkNumber,
+  type ChipmunkString,
+  type ChipmunkSymbol,
+  type ChipmunkType,
+  type ChipmunkVector,
+} from "./types.js";
 
 class Parser {
   private position: number = 0;
 
-  public constructor(private readonly tokens: Token[]) {}
+  public constructor(private readonly tokens: Token[]) { }
 
   public parse(): ChipmunkType {
     const result: ChipmunkType = this.parseExpression();
@@ -24,11 +24,11 @@ class Parser {
   }
 
   private peek(): Token {
-    return this.tokens[this.position];
+    return this.tokens[this.position]!;
   }
 
   private next(): Token {
-    const token: Token = this.tokens[this.position];
+    const token: Token = this.tokens[this.position]!;
     this.position += 1;
     return token;
   }

@@ -1,7 +1,9 @@
-import interpret from "../src/interpret.ts";
-import replEnv from "../src/replEnv.ts";
-import toString from "../src/utils/toString.ts";
-import { assertEquals, assertThrows } from "@std/assert";
+import test from 'node:test';
+import assert from 'node:assert';
+
+import interpret from "./interpret.js";
+import replEnv from "./replEnv.js";
+import toString from "./utils/toString.js";
 
 interface IPositiveTestCase {
   input: string;
@@ -138,22 +140,18 @@ const negativeTestCases: INegativeTestCase[] = [
 ];
 
 positiveTestCases.forEach((testCase: IPositiveTestCase) => {
-  Deno.test({
-    name: `${testCase.input} => ${testCase.expectedOutput}`,
-    fn: () => {
-      const actualOutput: string = toString(
-        interpret(testCase.input, replEnv),
-      );
-      assertEquals(actualOutput, testCase.expectedOutput);
-    },
-  });
+  const name = `${testCase.input} => ${testCase.expectedOutput}`;
+  test(name, () => {
+    const actualOutput: string = toString(
+      interpret(testCase.input, replEnv),
+    );
+    assert.deepStrictEqual(actualOutput, testCase.expectedOutput);
+  })
 });
 
 negativeTestCases.forEach((testCase: INegativeTestCase) => {
-  Deno.test({
-    name: `${testCase.input} cannot be evaluated because ${testCase.reason}`,
-    fn: () => {
-      assertThrows(() => interpret(testCase.input, replEnv));
-    },
+  const name = `${testCase.input} cannot be evaluated because ${testCase.reason}`;
+  test(name, () => {
+    assert.throws(() => interpret(testCase.input, replEnv));
   });
 });

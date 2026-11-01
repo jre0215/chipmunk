@@ -1,22 +1,24 @@
-import type { JavaScriptNode } from "../src/jstypes.ts";
-import type { ChipmunkType } from "../src/types.ts";
+import test from 'node:test';
+import assert from 'node:assert';
+
+import type { JavaScriptNode } from "./jstypes.js";
+import type { ChipmunkType } from "./types.js";
 import {
   compileJavaScriptToSourceNode,
   convertChipmunkNodeToJavaScriptNode,
-} from "../src/codegen.ts";
-import Parser from "../src/Parser.ts";
-import Tokenizer from "../src/Tokenizer.ts";
+} from "./codegen.js";
+import Parser from "./Parser.js";
+import Tokenizer from "./Tokenizer.js";
 
-import { assertEquals } from "@std/assert";
 
 interface IPositiveTestCase {
   input: string;
   expectedOutput:
-    | number
-    | string
-    | null
-    | boolean
-    | (number | string | null | boolean)[];
+  | number
+  | string
+  | null
+  | boolean
+  | (number | string | null | boolean)[];
 }
 
 const positiveTestCases: IPositiveTestCase[] = [
@@ -89,21 +91,19 @@ const positiveTestCases: IPositiveTestCase[] = [
 ];
 
 positiveTestCases.forEach((testCase: IPositiveTestCase) => {
-  Deno.test({
-    name: `${testCase.input} => ${testCase.expectedOutput}`,
-    fn: () => {
-      const tokenizer: Tokenizer = new Tokenizer(testCase.input);
-      const parser: Parser = new Parser(tokenizer.tokenize());
-      const chipmunkAst: ChipmunkType = parser.parse();
-      const javaScriptAst: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
-        chipmunkAst,
-        true,
-      );
-      const javaScriptCode: string = compileJavaScriptToSourceNode(
-        javaScriptAst,
-      ).toString();
-      const actualOutput: string = eval(javaScriptCode);
-      assertEquals(actualOutput, testCase.expectedOutput);
-    },
-  });
+  const name = `${testCase.input} => ${testCase.expectedOutput}`;
+  test(name, () => {
+    const tokenizer: Tokenizer = new Tokenizer(testCase.input);
+    const parser: Parser = new Parser(tokenizer.tokenize());
+    const chipmunkAst: ChipmunkType = parser.parse();
+    const javaScriptAst: JavaScriptNode = convertChipmunkNodeToJavaScriptNode(
+      chipmunkAst,
+      true,
+    );
+    const javaScriptCode: string = compileJavaScriptToSourceNode(
+      javaScriptAst,
+    ).toString();
+    const actualOutput: string = eval(javaScriptCode);
+    assert.deepStrictEqual(actualOutput, testCase.expectedOutput);
+  })
 });

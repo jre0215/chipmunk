@@ -1,8 +1,9 @@
-import interpret from "../../src/interpret.ts";
-import replEnv from "../../src/replEnv.ts";
-import toString from "../../src/utils/toString.ts";
+import test from 'node:test';
+import assert from 'node:assert';
 
-import { assertEquals } from "@std/assert";
+import interpret from "../interpret.js";
+import replEnv from "../replEnv.js";
+import toString from "./toString.js";
 
 interface ITestCase {
   input: string;
@@ -34,15 +35,12 @@ const testCases: ITestCase[] = [
 ];
 
 testCases.forEach((testCase: ITestCase) => {
-  Deno.test({
-    name:
-      `\`${testCase.input}\` => \`${testCase.expectedOutput}\` (printable = ${testCase.printable})`,
-    fn: () => {
-      const actualOutput: string = toString(
-        interpret(testCase.input, replEnv),
-        testCase.printable,
-      );
-      assertEquals(actualOutput, testCase.expectedOutput);
-    },
-  });
+  const name = `\`${testCase.input}\` => \`${testCase.expectedOutput}\` (printable = ${testCase.printable})`;
+  test(name, () => {
+    const actualOutput: string = toString(
+      interpret(testCase.input, replEnv),
+      testCase.printable,
+    );
+    assert.strictEqual(actualOutput, testCase.expectedOutput);
+  })
 });

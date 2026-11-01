@@ -1,5 +1,5 @@
-import { ChipmunkNodeType, ChipmunkSymbol, ChipmunkType } from "../types.ts";
-import escapeString from "./escapeString.ts";
+import { ChipmunkNodeType, type ChipmunkSymbol, type ChipmunkType } from "../types.js";
+import escapeString from "./escapeString.js";
 
 function toString(ast: ChipmunkType, printable: boolean = false): string {
   if (ast.type === ChipmunkNodeType.Boolean) {

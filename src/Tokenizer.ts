@@ -1,11 +1,11 @@
-import { Token, TokenType } from "./tokens.ts";
+import { type Token, TokenType } from "./tokens.js";
 
 class Tokenizer {
   private position: number = 0;
   private line: number = 1;
   private column: number = 1;
 
-  public constructor(private readonly input: string) {}
+  public constructor(private readonly input: string) { }
 
   public tokenize(): Token[] {
     const tokens: Token[] = [];

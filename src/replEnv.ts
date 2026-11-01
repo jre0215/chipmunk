@@ -1,18 +1,20 @@
-import Environment from "./Environment.ts";
-import evaluate from "./evaluate.ts";
-import interpret from "./interpret.ts";
-import Parser from "./Parser.ts";
-import Tokenizer from "./Tokenizer.ts";
+import { readFileSync } from 'node:fs';
+
+import Environment from "./Environment.js";
+import evaluate from "./evaluate.js";
+import interpret from "./interpret.js";
+import Parser from "./Parser.js";
+import Tokenizer from "./Tokenizer.js";
 import {
-  ChipmunkBoolean,
-  ChipmunkNil,
+  type ChipmunkBoolean,
+  type ChipmunkNil,
   ChipmunkNodeType,
-  ChipmunkNumber,
-  ChipmunkString,
-  ChipmunkType,
-  ChipmunkVector,
-} from "./types.ts";
-import toString from "./utils/toString.ts";
+  type ChipmunkNumber,
+  type ChipmunkString,
+  type ChipmunkType,
+  type ChipmunkVector,
+} from "./types.js";
+import toString from "./utils/toString.js";
 
 const replEnv: Environment = new Environment();
 
@@ -83,6 +85,9 @@ defineChipmunkFunction(">", (args: ChipmunkType[]): ChipmunkType => {
 });
 
 defineChipmunkFunction("length", (args: ChipmunkType[]): ChipmunkNumber => {
+  if (args[0] === undefined) {
+    throw new Error("length() takes a list, vector, or string");
+  }
   const arg: ChipmunkType = args[0];
   if (arg.type === ChipmunkNodeType.List) {
     return { type: ChipmunkNodeType.Number, value: arg.items.length };
@@ -96,12 +101,19 @@ defineChipmunkFunction("length", (args: ChipmunkType[]): ChipmunkNumber => {
 });
 
 defineChipmunkFunction("nth", (args: ChipmunkType[]): ChipmunkType => {
+  if (args[0] === undefined || args[1] === undefined) {
+    throw new Error("nth() takes a list, string, or vector and a number");
+  }
   if (
     (args[0].type === ChipmunkNodeType.List ||
       args[0].type === ChipmunkNodeType.Vector) &&
     args[1].type === ChipmunkNodeType.Number
   ) {
-    return args[0].items[args[1].value];
+    const el = args[0].items[args[1].value];
+    if (el === undefined) {
+      throw new Error("not enough items in list");
+    }
+    return el;
   } else if (
     args[0].type === ChipmunkNodeType.String &&
     args[1].type === ChipmunkNodeType.Number
@@ -116,6 +128,9 @@ defineChipmunkFunction("nth", (args: ChipmunkType[]): ChipmunkType => {
 });
 
 defineChipmunkFunction("slice", (args: ChipmunkType[]): ChipmunkVector => {
+  if (args[0] === undefined || args[1] === undefined || args[2] === undefined) {
+    throw new Error("slice() takes a vector and two numbers");
+  }
   if (
     args[0].type === ChipmunkNodeType.Vector &&
     args[1].type === ChipmunkNodeType.Number &&
@@ -131,6 +146,9 @@ defineChipmunkFunction("slice", (args: ChipmunkType[]): ChipmunkVector => {
 });
 
 defineChipmunkFunction("join", (args: ChipmunkType[]): ChipmunkVector => {
+  if (args[0] === undefined || args[1] === undefined) {
+    throw new Error("join() takes two vectors");
+  }
   if (
     args[0].type === ChipmunkNodeType.Vector &&
     args[1].type === ChipmunkNodeType.Vector
@@ -153,6 +171,9 @@ defineChipmunkFunction("concat", (args: ChipmunkType[]): ChipmunkString => {
 });
 
 defineChipmunkFunction("to-string", (args: ChipmunkType[]): ChipmunkString => {
+  if (args[0] === undefined) {
+    throw new Error('to-string() takes one argument');
+  }
   return { type: ChipmunkNodeType.String, value: toString(args[0]) };
 });
 
@@ -172,8 +193,11 @@ defineChipmunkFunction("parse-float", (args: ChipmunkType[]): ChipmunkType => {
 defineChipmunkFunction(
   "print",
   (args: ChipmunkType[]): ChipmunkNil => {
+    if (args[0] === undefined) {
+      throw new Error('print() takes one argument');
+    }
     const message: string = toString(args[0], true);
-    Deno.stdout.writeSync(new TextEncoder().encode(message));
+    console.log(message);
     return { type: ChipmunkNodeType.Nil };
   },
 );
@@ -181,11 +205,11 @@ defineChipmunkFunction(
 defineChipmunkFunction(
   "print-line",
   (args: ChipmunkType[]): ChipmunkNil => {
-    if (args.length === 0) {
-      Deno.stdout.writeSync(new TextEncoder().encode("\n"));
+    if (args.length < 1) {
+      console.log('\n');
     } else {
-      const message: string = toString(args[0], true);
-      Deno.stdout.writeSync(new TextEncoder().encode(message + "\n"));
+      const message: string = toString(args[0]!, true);
+      console.log(message + '\n');
     }
     return { type: ChipmunkNodeType.Nil };
   },
@@ -202,13 +226,16 @@ defineChipmunkFunction(
   "read-file",
   (args: ChipmunkType[]): ChipmunkString => {
     const path: string = (args[0] as ChipmunkString).value;
-    const contents: string = Deno.readTextFileSync(path);
+    const contents = readFileSync(path, 'utf8');
     return { type: ChipmunkNodeType.String, value: contents };
   },
 );
 
 defineChipmunkFunction("do", (args: ChipmunkType[]): ChipmunkType => {
-  return args[args.length - 1];
+  if (args.length < 1) {
+    throw new Error('do() takes at least one argument');
+  }
+  return args[args.length - 1]!;
 });
 
 defineChipmunkFunction("parse-string", (args: ChipmunkType[]): ChipmunkType => {
@@ -221,6 +248,9 @@ defineChipmunkFunction("parse-string", (args: ChipmunkType[]): ChipmunkType => {
 defineChipmunkFunction(
   "eval",
   (args: ChipmunkType[]): ChipmunkType => {
+    if (args[0] === undefined) {
+      throw new Error('eval() takes one argument');
+    }
     return evaluate(args[0], replEnv);
   },
 );

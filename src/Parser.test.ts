@@ -1,7 +1,9 @@
-import type { Token } from "../src/tokens.ts";
-import Parser from "../src/Parser.ts";
-import Tokenizer from "../src/Tokenizer.ts";
-import { assertThrows } from "@std/assert";
+import test from 'node:test';
+import assert from 'node:assert';
+
+import type { Token } from "./tokens.js";
+import Parser from "./Parser.js";
+import Tokenizer from "./Tokenizer.js";
 
 interface INegativeTestCase {
   input: string;
@@ -39,14 +41,11 @@ const negativeTests: INegativeTestCase[] = [
 ];
 
 negativeTests.forEach((testCase: INegativeTestCase) => {
-  Deno.test({
-    name:
-      `input cannot be parsed because ${testCase.reason}: ${testCase.input}`,
-    fn: () => {
-      const tokenizer: Tokenizer = new Tokenizer(testCase.input);
-      const tokens: Token[] = tokenizer.tokenize();
-      const parser: Parser = new Parser(tokens);
-      assertThrows(() => parser.parse());
-    },
-  });
+  const name = `input cannot be parsed because ${testCase.reason}: ${testCase.input}`;
+  test(name, () => {
+    const tokenizer: Tokenizer = new Tokenizer(testCase.input);
+    const tokens: Token[] = tokenizer.tokenize();
+    const parser: Parser = new Parser(tokens);
+    assert.throws(() => parser.parse());
+  })
 });
