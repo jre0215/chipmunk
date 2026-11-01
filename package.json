@@ -21,8 +21,8 @@
   "scripts": {
     "chipmunk": "tsx src/index.ts",
     "compile": "tsx src/compile.ts",
-    "typecheck": "tsc --noEmit",
-    "test": "tsc --noEmit && node --import tsx --test 'src/**/*.test.ts'",
+    "typecheck": "tsc",
+    "test": "tsc && node --import tsx --test 'src/**/*.test.ts'",
     "lint": "oxlint",
     "format": "oxfmt",
     "format:check": "oxfmt --check"
